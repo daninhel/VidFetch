@@ -1,0 +1,12 @@
+body{
+    background-color: #2b1e57;
+}
+
+section{
+    margin-top: 15%;
+    margin-right: 5%;
+    margin-left: 5%;
+    padding: 5%;
+    background-color: white;
+    border-radius: 5px;
+}
