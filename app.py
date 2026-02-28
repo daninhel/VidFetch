@@ -60,14 +60,14 @@ def set_security_headers(response):
     response.headers["X-XSS-Protection"]        = "1; mode=block"
     response.headers["Referrer-Policy"]         = "strict-origin-when-cross-origin"
     response.headers["Permissions-Policy"]      = "geolocation=(), camera=(), microphone=()"
-    # CSP: only allow our own assets + Google Fonts + YouTube thumbnails + Vercel Analytics
+    # CSP: only allow our own assets + Google Fonts + YouTube thumbnails + Vercel Analytics + Vercel Speed Insights
     response.headers["Content-Security-Policy"] = (
         "default-src 'self'; "
-        "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com; "
+        "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com https://*.vercel-scripts.com; "
         "style-src 'self' https://fonts.googleapis.com; "
         "font-src https://fonts.gstatic.com; "
         "img-src 'self' https://i.ytimg.com https://*.ytimg.com data:; "
-        "connect-src 'self' https://va.vercel-analytics.com https://*.vercel-analytics.com; "
+        "connect-src 'self' https://va.vercel-analytics.com https://*.vercel-analytics.com https://vitals.vercel-insights.com; "
         "frame-ancestors 'none';"
     )
     return response
@@ -380,7 +380,7 @@ def download():
                                 yield chunk
                 except http_requests.RequestException as proxy_err:
                     log.error("Proxy error: %s", proxy_err)
-                    # Generator já começou — não dá para mudar status code, mas interrompe o stream
+                    # Generator já começou — n��o dá para mudar status code, mas interrompe o stream
 
             mime_map = {"mp3": "audio/mpeg", "m4a": "audio/mp4", "webm": "video/webm", "mp4": "video/mp4"}
             content_type = mime_map.get(ext, "application/octet-stream")
