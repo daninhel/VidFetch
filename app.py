@@ -149,7 +149,8 @@ def validate_youtube_url(url: str) -> str | None:
 
 
 def build_yt(url: str) -> YouTube:
-    return YouTube(url, on_progress_callback=on_progress)
+    # use_po_token ajuda a contornar o bloqueio de bot (comum nos IPs da Vercel)
+    return YouTube(url, on_progress_callback=on_progress, client="WEB", use_po_token=True)
 
 
 def sort_key(item: dict) -> int:

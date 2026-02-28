@@ -493,3 +493,18 @@
 [2026-02-28 17:41:27] INFO     ============================================================
 [2026-02-28 17:41:27] WARNING   * Debugger is active!
 [2026-02-28 17:41:27] INFO      * Debugger PIN: 116-096-369
+[2026-02-28 17:44:27] INFO      * Detected change in 'D:\\Programação\\Projetos\\Pytube\\app.py', reloading
+[2026-02-28 17:44:27] INFO      * Restarting with stat
+[2026-02-28 17:44:28] INFO      * Detected change in 'D:\\Programação\\Projetos\\Pytube\\app.py', reloading
+[2026-02-28 17:44:28] INFO      * Restarting with stat
+[2026-02-28 17:44:29] INFO     ============================================================
+[2026-02-28 17:44:29] INFO     Servidor iniciado | FFmpeg: True
+[2026-02-28 17:44:29] INFO     ============================================================
+[2026-02-28 17:44:30] WARNING   * Debugger is active!
+[2026-02-28 17:44:30] INFO      * Debugger PIN: 116-096-369
+[2026-02-28 17:44:30] INFO     ============================================================
+[2026-02-28 17:44:30] INFO     FFmpeg encontrado no PATH do sistema: C:\Users\flame\AppData\Local\Microsoft\WinGet\Links\ffmpeg.exe
+[2026-02-28 17:44:30] INFO     Servidor iniciado | FFmpeg: True
+[2026-02-28 17:44:30] INFO     ============================================================
+[2026-02-28 17:44:30] WARNING   * Debugger is active!
+[2026-02-28 17:44:30] INFO      * Debugger PIN: 116-096-369
