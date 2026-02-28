@@ -150,17 +150,17 @@ def validate_youtube_url(url: str) -> str | None:
 
 def build_yt(url: str) -> YouTube:
     # No Vercel (Cloud IPs), o YouTube frequentemente aplica "Bot Detection".
-    # `use_po_token=True` tenta pedir input interativo no terminal (causando EOFError).
-    # Como solução serverless, usamos um fallback entre diferentes clients nativos do pytubefix.
+    # Usamos clients mobile primeiro ("ANDROID", "IOS") que sofrem menos restrições.
     try:
-        return YouTube(url, on_progress_callback=on_progress, client="ANDROID_CREATOR")
+        return YouTube(url, on_progress_callback=on_progress, client="ANDROID")
     except Exception as e:
-        log.warning("Falha com ANDROID_CREATOR: %s. Tentando IOS...", e)
+        log.warning("Falha com ANDROID: %s. Tentando IOS...", e)
         try:
             return YouTube(url, on_progress_callback=on_progress, client="IOS")
         except Exception as e2:
-            log.warning("Falha com IOS: %s. Tentando WEB_EMBED...", e2)
-            return YouTube(url, on_progress_callback=on_progress, client="WEB_EMBED")
+            log.warning("Falha com IOS: %s. Tentando WEB...", e2)
+            # Sem use_po_token=True p/ não causar EOFError no Serverless
+            return YouTube(url, on_progress_callback=on_progress, client="WEB")
 
 
 def sort_key(item: dict) -> int:
