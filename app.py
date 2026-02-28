@@ -9,6 +9,7 @@ from urllib.parse import urlparse, quote
 
 import requests as http_requests
 from flask import Flask, request, jsonify, render_template, send_file, Response, after_this_request, make_response, stream_with_context
+import pytubefix.innertube
 from pytubefix import YouTube
 from pytubefix.cli import on_progress
 from pytubefix.exceptions import (
@@ -21,13 +22,29 @@ from pytubefix.exceptions import (
     LiveStreamError,
 )
 
-# ── Logging ───────────────────────────────────────────────────────────────────
+# ── Logging & Configuração Vercel Cache ───────────────────────────────────────
 
-# No Vercel, o sistema de arquivos é read-only, com exceção da pasta /tmp
+# Configura as pastas temporárias do Vercel e o Logging
 if os.environ.get("VERCEL") == "1":
     LOG_DIR = os.path.join("/tmp", "logs")
+    
+    # Prepara o cache de autenticação do YouTube (tokens.json) para contornar o AWS Bot IP Block
+    TMP_CACHE = "/tmp/pytubefix_cache"
+    os.makedirs(TMP_CACHE, exist_ok=True)
+    
+    dst_token = os.path.join(TMP_CACHE, "tokens.json")
+    
+    # Se o token estiver nas Variáveis de Ambiente (Segurança), escreve ele no /tmp
+    env_tokens = os.environ.get("PYTUBE_TOKENS")
+    if env_tokens and not os.path.isfile(dst_token):
+        with open(dst_token, "w", encoding="utf-8") as f:
+            f.write(env_tokens)
+        
+    pytubefix.innertube._cache_dir = TMP_CACHE
 else:
     LOG_DIR = os.path.join(os.path.dirname(__file__), "logs")
+    # Usa a raiz do projeto como cache_dir local
+    pytubefix.innertube._cache_dir = os.path.dirname(__file__)
 
 os.makedirs(LOG_DIR, exist_ok=True)
 
@@ -149,18 +166,30 @@ def validate_youtube_url(url: str) -> str | None:
 
 
 def build_yt(url: str) -> YouTube:
-    # No Vercel (Cloud IPs), o YouTube frequentemente aplica "Bot Detection".
-    # Usamos clients mobile primeiro ("ANDROID", "IOS") que sofrem menos restrições.
+    # No Vercel, o YouTube aplica bot detection pesada usando IP Block.
+    # Nossa salvação é usar tokens de OAuth simulando um usuário logado validado.
+    log.info("Usando diretório de cache OAuth: %s", pytubefix.innertube._cache_dir)
     try:
-        return YouTube(url, on_progress_callback=on_progress, client="ANDROID")
+        return YouTube(
+            url, 
+            on_progress_callback=on_progress, 
+            client="ANDROID", 
+            use_oauth=True, 
+            allow_oauth_cache=True
+        )
     except Exception as e:
-        log.warning("Falha com ANDROID: %s. Tentando IOS...", e)
+        log.warning("Falha com ANDROID (OAuth): %s. Tentando WEB...", e)
         try:
-            return YouTube(url, on_progress_callback=on_progress, client="IOS")
+            return YouTube(
+                url, 
+                on_progress_callback=on_progress, 
+                client="WEB", 
+                use_oauth=True, 
+                allow_oauth_cache=True
+            )
         except Exception as e2:
-            log.warning("Falha com IOS: %s. Tentando WEB...", e2)
-            # Sem use_po_token=True p/ não causar EOFError no Serverless
-            return YouTube(url, on_progress_callback=on_progress, client="WEB")
+            log.warning("Falha com WEB (OAuth): %s", e2)
+            raise e2
 
 
 def sort_key(item: dict) -> int:
