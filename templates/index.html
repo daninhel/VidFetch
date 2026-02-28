@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ── SEO primário ─────────────────────────────────────────────────── -->
+  <title>PyTube Downloader — Baixe vídeos do YouTube em MP4, MP3 e mais</title>
+  <meta name="description"
+    content="Baixe vídeos do YouTube gratuitamente em MP4, WebM, MP3 e M4A. Escolha a qualidade desejada e faça o download em segundos — sem cadastro, sem limite." />
+  <meta name="keywords"
+    content="baixar vídeo youtube, youtube downloader, download mp4, download mp3 youtube, youtube para mp3, baixar música youtube" />
+  <meta name="author" content="PyTube Downloader" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="/" />
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}" />
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='favicon.png') }}" />
+
+  <!-- ── Open Graph (Facebook / WhatsApp / LinkedIn) ──────────────────── -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="PyTube Downloader — Baixe vídeos do YouTube grátis" />
+  <meta property="og:description"
+    content="Baixe vídeos do YouTube em MP4, WebM, MP3 ou M4A. Escolha a qualidade e baixe em segundos." />
+  <meta property="og:locale" content="pt_BR" />
+
+  <!-- ── Twitter Card ─────────────────────────────────────────────────── -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="PyTube Downloader — Baixe vídeos do YouTube grátis" />
+  <meta name="twitter:description"
+    content="MP4, WebM, MP3 e M4A. Escolha a qualidade e baixe em segundos, sem cadastro." />
+
+  <!-- ── JSON-LD (Google Rich Results) ────────────────────────────────── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "PyTube Downloader",
+    "description": "Aplicação web para baixar vídeos do YouTube em MP4, WebM, MP3 e M4A.",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "All",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "BRL"
+    },
+    "inLanguage": "pt-BR"
+  }
+  </script>
+
+  <!-- ── Fontes ────────────────────────────────────────────────────────── -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2" />
+</head>
+
+<body>
+
+  <div class="bg-orbs" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <main class="container">
+
+    <!-- Header / Hero -->
+    <header class="app-header">
+      <div class="logo" role="img" aria-label="PyTube Downloader logo">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z" fill="url(#grad1)" />
+          <path d="M10 8l6 4-6 4V8z" fill="white" />
+          <defs>
+            <linearGradient id="grad1" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#a855f7" />
+              <stop offset="100%" stop-color="#6366f1" />
+            </linearGradient>
+          </defs>
+        </svg>
+        <span class="logo-text">PyTube <span class="logo-accent">Downloader</span></span>
+      </div>
+      <h1 class="site-h1">Baixe vídeos do YouTube</h1>
+      <p class="subtitle">Cole o link, escolha a qualidade e baixe em MP4, MP3 e muito mais.</p>
+    </header>
+
+    <!-- URL Input -->
+    <section class="card input-card" aria-label="Campo de URL do vídeo">
+      <div class="input-group">
+        <div class="input-wrapper">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            aria-hidden="true">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+          </svg>
+          <input id="url-input" type="url" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off"
+            spellcheck="false" aria-label="URL do vídeo do YouTube" />
+          <button id="paste-btn" class="paste-btn" title="Colar da área de transferência" aria-label="Colar URL">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </div>
+        <button id="fetch-btn" class="btn btn-primary" disabled aria-label="Buscar informações do vídeo">
+          <span class="btn-text">Buscar</span>
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            aria-hidden="true">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Loading -->
+    <div id="loading" class="loading hidden" role="status" aria-live="polite" aria-label="Carregando">
+      <div class="spinner" aria-hidden="true"></div>
+      <p>Buscando informações do vídeo...</p>
+    </div>
+
+    <!-- Error -->
+    <div id="error-box" class="error-box hidden" role="alert" aria-live="assertive">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="8" x2="12" y2="12" />
+        <line x1="12" y1="16" x2="12.01" y2="16" />
+      </svg>
+      <div>
+        <strong id="error-title">Ocorreu um erro</strong>
+        <p id="error-msg"></p>
+      </div>
+    </div>
+
+    <!-- Video Info + Options -->
+    <section id="result-section" class="hidden" aria-label="Resultado da busca">
+
+      <!-- Video Card -->
+      <div class="card video-card">
+        <img id="thumbnail" class="thumbnail" src="" alt="Miniatura do vídeo" loading="lazy" />
+        <div class="video-meta">
+          <h2 id="video-title" class="video-title"></h2>
+          <p id="video-author" class="video-author"></p>
+          <p id="video-duration" class="video-duration"></p>
+          <div id="ffmpeg-notice" class="ffmpeg-notice hidden" role="note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            <span>FFmpeg não encontrado. Qualidades acima de 720p ficarão desabilitadas.
+              <a href="https://ffmpeg.org/download.html" target="_blank" rel="noopener noreferrer">Instalar FFmpeg →</a>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Format + Quality Selection -->
+      <div class="card options-card">
+        <h3 class="options-heading">Opções de Download</h3>
+
+        <div class="tabs" id="format-tabs" role="tablist" aria-label="Formato do arquivo">
+          <button class="tab active" data-format="mp4" role="tab" aria-selected="true" aria-controls="quality-list"
+            id="tab-mp4">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polygon points="23 7 16 12 23 17 23 7" />
+              <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+            </svg>
+            MP4
+          </button>
+          <button class="tab" data-format="webm" role="tab" aria-selected="false" aria-controls="quality-list"
+            id="tab-webm">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polygon points="23 7 16 12 23 17 23 7" />
+              <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+            </svg>
+            WebM
+          </button>
+          <button class="tab" data-format="mp3" role="tab" aria-selected="false" aria-controls="quality-list"
+            id="tab-mp3">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M9 18V5l12-2v13" />
+              <circle cx="6" cy="18" r="3" />
+              <circle cx="18" cy="16" r="3" />
+            </svg>
+            MP3
+          </button>
+          <button class="tab" data-format="m4a" role="tab" aria-selected="false" aria-controls="quality-list"
+            id="tab-m4a">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M9 18V5l12-2v13" />
+              <circle cx="6" cy="18" r="3" />
+              <circle cx="18" cy="16" r="3" />
+            </svg>
+            M4A
+          </button>
+        </div>
+
+        <p id="format-desc" class="format-desc" aria-live="polite"></p>
+
+        <div id="quality-list" class="quality-list" role="radiogroup" aria-label="Qualidade do download"></div>
+
+        <button id="download-btn" class="btn btn-download" disabled aria-label="Iniciar download">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          <span id="download-btn-text">Selecione uma qualidade</span>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- FAQ (SEO) -->
+    <section class="faq-section" aria-label="Perguntas frequentes">
+      <h2 class="faq-heading">Perguntas frequentes</h2>
+      <details class="faq-item">
+        <summary>Quais formatos posso baixar?</summary>
+        <p>MP4 e WebM para vídeo, MP3 e M4A para áudio.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Por que a qualidade 1080p ou 4K está desabilitada?</summary>
+        <p>O YouTube distribui vídeo e áudio separadamente para resoluções acima de 720p. Para mesclar os dois é preciso
+          ter o FFmpeg instalado no servidor.</p>
+      </details>
+      <details class="faq-item">
+        <summary>É necessário fazer cadastro?</summary>
+        <p>Não. Basta colar o link e baixar — sem conta, sem limite.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Funciona com vídeos privados ou com restrição de idade?</summary>
+        <p>Não. Apenas vídeos públicos podem ser baixados.</p>
+      </details>
+    </section>
+
+  </main>
+
+  <!-- Download progress overlay -->
+  <div id="download-overlay" class="download-overlay hidden" role="status" aria-live="polite">
+    <div class="download-toast">
+      <div class="spinner small" aria-hidden="true"></div>
+      <span>Preparando download... isso pode levar alguns instantes.</span>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='app.js') }}?v=3"></script>
+</body>
+
+</html>
