@@ -149,18 +149,27 @@ def validate_youtube_url(url: str) -> str | None:
 
 
 def build_yt(url: str) -> YouTube:
-    # No Vercel (Cloud IPs), o YouTube frequentemente aplica "Bot Detection".
-    # Usamos clients mobile primeiro ("ANDROID", "IOS") que sofrem menos restrições.
-    try:
-        return YouTube(url, on_progress_callback=on_progress, client="ANDROID")
-    except Exception as e:
-        log.warning("Falha com ANDROID: %s. Tentando IOS...", e)
+    # Fallback robusto para Bot Detection severa em Nuvem (AWS/Vercel)
+    clients_to_try = [
+        "ANDROID_VR",  # Menos bloqueios recentes para leitura
+        "ANDROID",     # Tradicional mobile guest
+        "IOS",         # Apple guest
+        "MWEB",        # Mobile Web
+        "WEB"          # Web clássico
+    ]
+    last_exc = None
+    for c in clients_to_try:
         try:
-            return YouTube(url, on_progress_callback=on_progress, client="IOS")
-        except Exception as e2:
-            log.warning("Falha com IOS: %s. Tentando WEB...", e2)
-            # Sem use_po_token=True p/ não causar EOFError no Serverless
-            return YouTube(url, on_progress_callback=on_progress, client="WEB")
+            yt = YouTube(url, on_progress_callback=on_progress, client=c)
+            _ = yt.title  # Força o fetch real para validar se não estamos bloqueados
+            return yt
+        except Exception as e:
+            log.warning("Falha ao buscar com client %s (%s)", c, e)
+            last_exc = e
+            
+    # Se todos falharem (raro se houver VPs saudáveis, comum em soft ban pesado de IP nulo) 
+    # lança a última exceção para ser rastreada no log
+    raise last_exc
 
 
 def sort_key(item: dict) -> int:
