@@ -478,3 +478,18 @@
 [2026-02-28 17:23:16] INFO     Proxy streaming → 'Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster).mp4'
 [2026-02-28 17:23:16] INFO     Content-Disposition enviado: attachment; filename="Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster).mp4"; filename*=UTF-8''Rick%20Astley%20-%20Never%20Gonna%20Give%20You%20Up%20%28Official%20Video%29%20%284K%20Remaster%29.mp4
 [2026-02-28 17:23:16] INFO     127.0.0.1 - - [28/Feb/2026 17:23:16] "GET /api/download?url=https://www.youtube.com/watch?v%3DdQw4w9WgXcQ&itag=18&format=mp4 HTTP/1.1" 200 -
+[2026-02-28 17:41:22] INFO      * Detected change in 'D:\\Programação\\Projetos\\Pytube\\app.py', reloading
+[2026-02-28 17:41:22] INFO      * Restarting with stat
+[2026-02-28 17:41:24] INFO     ============================================================
+[2026-02-28 17:41:24] INFO     Servidor iniciado | FFmpeg: True
+[2026-02-28 17:41:24] INFO     ============================================================
+[2026-02-28 17:41:24] WARNING   * Debugger is active!
+[2026-02-28 17:41:24] INFO      * Debugger PIN: 116-096-369
+[2026-02-28 17:41:25] INFO      * Detected change in 'D:\\Programação\\Projetos\\Pytube\\app.py', reloading
+[2026-02-28 17:41:25] INFO      * Restarting with stat
+[2026-02-28 17:41:27] INFO     ============================================================
+[2026-02-28 17:41:27] INFO     FFmpeg encontrado no PATH do sistema: C:\Users\flame\AppData\Local\Microsoft\WinGet\Links\ffmpeg.exe
+[2026-02-28 17:41:27] INFO     Servidor iniciado | FFmpeg: True
+[2026-02-28 17:41:27] INFO     ============================================================
+[2026-02-28 17:41:27] WARNING   * Debugger is active!
+[2026-02-28 17:41:27] INFO      * Debugger PIN: 116-096-369

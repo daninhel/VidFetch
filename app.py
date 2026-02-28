@@ -23,7 +23,12 @@ from pytubefix.exceptions import (
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 
-LOG_DIR = os.path.join(os.path.dirname(__file__), "logs")
+# No Vercel, o sistema de arquivos é read-only, com exceção da pasta /tmp
+if os.environ.get("VERCEL") == "1":
+    LOG_DIR = os.path.join("/tmp", "logs")
+else:
+    LOG_DIR = os.path.join(os.path.dirname(__file__), "logs")
+
 os.makedirs(LOG_DIR, exist_ok=True)
 
 logging.basicConfig(
