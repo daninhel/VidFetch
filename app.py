@@ -60,14 +60,14 @@ def set_security_headers(response):
     response.headers["X-XSS-Protection"]        = "1; mode=block"
     response.headers["Referrer-Policy"]         = "strict-origin-when-cross-origin"
     response.headers["Permissions-Policy"]      = "geolocation=(), camera=(), microphone=()"
-    # CSP: only allow our own assets + Google Fonts + YouTube thumbnails
+    # CSP: only allow our own assets + Google Fonts + YouTube thumbnails + Vercel Analytics
     response.headers["Content-Security-Policy"] = (
         "default-src 'self'; "
-        "script-src 'self'; "
+        "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com; "
         "style-src 'self' https://fonts.googleapis.com; "
         "font-src https://fonts.gstatic.com; "
         "img-src 'self' https://i.ytimg.com https://*.ytimg.com data:; "
-        "connect-src 'self'; "
+        "connect-src 'self' https://va.vercel-analytics.com https://*.vercel-analytics.com; "
         "frame-ancestors 'none';"
     )
     return response
