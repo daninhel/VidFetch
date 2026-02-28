@@ -149,8 +149,18 @@ def validate_youtube_url(url: str) -> str | None:
 
 
 def build_yt(url: str) -> YouTube:
-    # use_po_token ajuda a contornar o bloqueio de bot (comum nos IPs da Vercel)
-    return YouTube(url, on_progress_callback=on_progress, client="WEB", use_po_token=True)
+    # No Vercel (Cloud IPs), o YouTube frequentemente aplica "Bot Detection".
+    # `use_po_token=True` tenta pedir input interativo no terminal (causando EOFError).
+    # Como solução serverless, usamos um fallback entre diferentes clients nativos do pytubefix.
+    try:
+        return YouTube(url, on_progress_callback=on_progress, client="ANDROID_CREATOR")
+    except Exception as e:
+        log.warning("Falha com ANDROID_CREATOR: %s. Tentando IOS...", e)
+        try:
+            return YouTube(url, on_progress_callback=on_progress, client="IOS")
+        except Exception as e2:
+            log.warning("Falha com IOS: %s. Tentando WEB_EMBED...", e2)
+            return YouTube(url, on_progress_callback=on_progress, client="WEB_EMBED")
 
 
 def sort_key(item: dict) -> int:
