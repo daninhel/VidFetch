@@ -1,4 +1,4 @@
-# VidFetch (Antigo Pytube)
+# VidFetch
 **Baixador ágil e minimalista de Vídeos e Áudios do YouTube — Otimizado para Vercel Serverless**
 
 O **VidFetch** é um Web App focado em oferecer downloads limpos, rápidos e em múltiplas qualidades (MP4, MP3, WebM e M4A) utilizando uma arquitetura 100% *Serverless* e moderna, driblando as restrições robóticas do Google/YouTube sem sobrecarregar seu disco rígido ou memória RAM. 
