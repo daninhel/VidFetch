@@ -121,7 +121,4 @@ def info():
     except Exception as e:
         return jsonify({'error': 'Erro ao se comunicar com YouTube', 'details': str(e)}), 500
 
-# Vercel Serverless Entrypoint Wrapper
-def handler(request):
-    with app.app_context():
-        return app.full_dispatch_request()
+

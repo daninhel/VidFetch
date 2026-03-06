@@ -1,7 +1,20 @@
-from api.info import app, sanitize_filename, validate_url
-from flask import request, jsonify, Response
+from flask import Flask, request, jsonify, Response
 import yt_dlp
 import requests
+import re
+
+app = Flask(__name__)
+
+def validate_url(url):
+    if not url:
+        return False, "A URL do vídeo é obrigatória."
+    yt_regex = r"^(https?\:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$"
+    if not re.match(yt_regex, url):
+         return False, "Domínio não autorizado. Use apenas links do YouTube."
+    return True, ""
+
+def sanitize_filename(name):
+    return re.sub(r'[^\w\s-]', '', name)[:200] or 'video'
 
 @app.route('/api/download', methods=['GET'])
 def download():
@@ -59,7 +72,4 @@ def download():
     except Exception as e:
         return jsonify({'error': 'Erro no stream do youtube', 'details': str(e)}), 500
 
-# Vercel Entrypoint
-def handler(request):
-    with app.app_context():
-        return app.full_dispatch_request()
+
