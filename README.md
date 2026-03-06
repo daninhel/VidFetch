@@ -1,200 +1,52 @@
-# PyTube Downloader
+# VidFetch (Antigo Pytube)
+**Baixador ágil e minimalista de Vídeos e Áudios do YouTube — Otimizado para Vercel Serverless**
 
-> App web simples para baixar vídeos do YouTube em MP4, WebM, MP3 e M4A.
+O **VidFetch** é um Web App focado em oferecer downloads limpos, rápidos e em múltiplas qualidades (MP4, MP3, WebM e M4A) utilizando uma arquitetura 100% *Serverless* e moderna, driblando as restrições robóticas do Google/YouTube sem sobrecarregar seu disco rígido ou memória RAM. 
 
-## Stack
+## 🚀 Arquitetura e Tecnologias
+O projeto foi totalmente migrado de Python (Flask) para **Node.js (TypeScript)** visando o ecossistema Vercel. 
+- **Back-end Serverless:** Construído sobre as Vercel API Routes (`/api/...`). Código roda localmente via `vercel dev` em funções assíncronas isoladas.
+- **Engine Core:** `youtube-dl-exec` invocando o poderoso `yt-dlp` por debaixo dos panos para quebrar os desafios de Cipher/poToken avançados que assombram o Node.js.
+- **Front-end:** HTML Vanilla, CSS flexível e modular, Javascript nativo com interatividade assíncrona.
+- **Proxy Stream:** O backend nunca salva o arquivo! Ele gera a URL do Google, repassa como proxy HTTP direto pro browser através de um `stream.pipe()`, tornando o download escalável.
 
-| Camada    | Tecnologia                        |
-|-----------|-----------------------------------|
-| Backend   | Python 3.11+ · Flask · pytubefix  |
-| Frontend  | HTML · CSS · JavaScript (vanilla) |
-| Merge A/V | FFmpeg (opcional, para >720p)      |
+## 📂 Estrutura de Pastas
 
-## Estrutura
-
-```
-Pytube/
-├── app.py                  # Servidor Flask
-├── requirements.txt        # Dependências Python
-├── logs/
-│   └── app.log             # Log rotativo (gerado automaticamente)
-├── templates/
-│   └── index.html          # Interface principal
-└── static/
-    ├── style.css
-    └── app.js
-```
-
-## Instalação e execução
-
-```bash
-# 1. Clone / entre na pasta
-cd "D:\Programação\Projetos\Pytube"
-
-# 2. (Opcional mas recomendado) Criar ambiente virtual
-python -m venv .venv
-.venv\Scripts\activate        # Windows
-# source .venv/bin/activate   # Linux/Mac
-
-# 3. Instalar dependências
-pip install -r requirements.txt
-
-# 4. Rodar
-python app.py
+```text
+/
+├── api/                           # [Vercel Serverless API]
+│   ├── download.ts                # Endpoint GET que repassa o arquivo para anexar.
+│   └── info.ts                    # Endpoint POST que retorna o parse de dados limpos.
+├── public/                        # [Frontend Estático]
+│   ├── app.js                     # Controla UI, fetch assíncrono, badges e progresso.
+│   ├── index.html                 # Ponto de entrada amigável com SEO e Google Adsense.
+│   └── style.css                  # Folhas de estilo Vanilla, Glassmorphism, UI fluida.
+├── src/                           # [Core Logic e Services]
+│   ├── services/
+│   │   └── youtube.service.ts     # Invocação do `youtube-dl-exec`, parse e mappings JSON.
+│   └── utils/                     
+│       └── validation.util.ts     # Regex de YT e parser de mensagens de erros nativos.
+├── tests/                         # Sandbox isolada e local para debuggar a extração de API.
+├── agent.md                       # Log avançado com os maiores limites do Vercel+YouTube.
+├── package.json                   # Dependências NPM e script 'npm start' > 'vercel dev'.
+└── vercel.json                    # Redirects de Build limpo na Vercel e definições Serverless.
 ```
 
-Abra **http://127.0.0.1:5000** no navegador.
+## 🛠 Como Executar Localmente
+O Vercel CLI orquestra automaticamente as funções `/api` paralelamente à pasta `/public`.
+*Certifique-se de que o FFmpeg e o Node.js v18+ estão instalados globalmente, o yt-dlp pode exigi-lo em algumas extrações!*
 
----
-
-## Formatos disponíveis
-
-| Formato | Tipo  | Requer FFmpeg?   | Descrição                                           |
-|---------|-------|-----------------|-----------------------------------------------------|
-| MP4     | Vídeo | Sim (>720p)      | Mais compatível. Até 720p: sem FFmpeg.              |
-| WebM    | Vídeo | Sim (>720p)      | Formato aberto. Até 720p: sem FFmpeg.               |
-| MP3     | Áudio | Não              | Áudio extraído e renomeado para .mp3.               |
-| M4A     | Áudio | Não              | Áudio nativo do YouTube, sem conversão.             |
-
-> **Por que qualidades acima de 720p precisam do FFmpeg?**
-> O YouTube distribui vídeo e áudio como arquivos separados para resoluções HD (1080p, 1440p, 4K). O FFmpeg é usado para mesclá-los em um único arquivo.
-
----
-
-## FFmpeg (para downloads em HD)
-
-### Windows
-```
-winget install ffmpeg
-```
-ou baixe em https://ffmpeg.org/download.html e adicione ao PATH.
-
-### Linux
-```bash
-sudo apt install ffmpeg        # Debian/Ubuntu
-sudo dnf install ffmpeg        # Fedora
-```
-
-### macOS
-```bash
-brew install ffmpeg
-```
-
-Após instalar, reinicie o servidor (`python app.py`). As qualidades acima de 720p serão desbloqueadas automaticamente.
-
----
-
-## Logs
-
-Os logs ficam em `logs/app.log` e são rotativos (máximo 5 MB por arquivo, 3 arquivos).
-
-Exemplo de saída:
-```
-[2026-02-28 16:00:00] INFO     Servidor iniciado. FFmpeg disponível: True
-[2026-02-28 16:00:05] INFO     POST /api/info — url=https://youtube.com/watch?v=...
-[2026-02-28 16:00:07] INFO     Streams encontradas — mp4:9 webm:4 mp3:4 m4a:3
-[2026-02-28 16:00:12] INFO     GET /api/download — format=mp4 itag=22
-[2026-02-28 16:00:45] INFO     Enviando arquivo 'Titulo do Video.mp4' (mp4)
-```
-
----
-
-## Como atualizar o pytubefix
-
-O `pytubefix` é atualizado frequentemente para acompanhar mudanças na API do YouTube.
-
-```bash
-# Ver versão atual
-pip show pytubefix
-
-# Atualizar para a versão mais recente
-pip install --upgrade pytubefix
-
-# Ou fixar uma versão específica (edite requirements.txt):
-# pytubefix==8.x.x
-pip install -r requirements.txt
-```
-
-### Quando atualizar?
-- Downloads começam a falhar com erros como `HTTP Error 403` ou `RegexMatchError`
-- O YouTube faz mudanças na forma de autenticação (comum a cada 1–3 meses)
-- Uma nova versão com correções foi lançada (veja o [changelog no GitHub](https://github.com/JuanBindez/pytubefix/releases))
-
-### Verificar se precisa atualizar
-```bash
-pip index versions pytubefix    # lista versões disponíveis
-```
-
----
-
-## Deploy no Vercel
-
-> **Atenção:** o Vercel usa funções serverless com timeout de **60 segundos** (plano Pro) ou **10 segundos** (plano gratuito). Downloads de vídeos grandes podem ultrapassar esse limite. Para uso contínuo, prefira [Railway](https://railway.app) ou [Render](https://render.com).
-
-### 1. Instalar o Vercel CLI
-
+1. **Instale os pacotes e dependências globais:**
 ```bash
 npm install -g vercel
+npm install
 ```
-
-### 2. Criar `vercel.json` na raiz do projeto
-
-```json
-{
-  "version": 2,
-  "builds": [
-    { "src": "app.py", "use": "@vercel/python" }
-  ],
-  "routes": [
-    { "src": "/(.*)", "dest": "app.py" }
-  ]
-}
-```
-
-### 3. Adaptar `app.py` para serverless
-
-O Vercel exige que o objeto Flask se chame `app` (já é o caso). Remova o bloco `if __name__ == "__main__"` ou mantenha-o com `debug=False`:
-
-```python
-if __name__ == "__main__":
-    app.run(debug=False)
-```
-
-### 4. Fazer o deploy
-
+2. **Inicie o servidor dev:**
 ```bash
-vercel          # deploy de preview
-vercel --prod   # deploy de produção
+npm start
 ```
+3. A porta `3000` (ou subsequente) abrirá confirmando a simulação serverless! Acesse e teste a aplicação na interface minimalista web.
 
-### Limitações no Vercel
-
-| Recurso            | Limitação                                    |
-|--------------------|----------------------------------------------|
-| Timeout (gratuito) | 10 segundos — vídeos >5 MB vão falhar        |
-| Timeout (Pro)      | 60 segundos — vídeos curtos ok               |
-| Armazenamento temp | `/tmp` com 512 MB                            |
-| FFmpeg             | **Não disponível** — apenas downloads ≤720p  |
-
-Para contornar o timeout, seria necessário usar streaming de dados diretamente do YouTube para o cliente, sem salvar arquivo antes — o que exigiria uma refatoração do endpoint `/api/download`.
-
-### Alternativas recomendadas para produção
-
-| Plataforma    | Características                            |
-|---------------|--------------------------------------------|
-| **Railway**   | Container completo, sem timeout, FFmpeg OK |
-| **Render**    | Deploy simples, plano gratuito lento       |
-| **Fly.io**    | Container, baixa latência, gratuito        |
-| **VPS/Cloud** | Controle total, deploy via gunicorn        |
-
-#### Exemplo com Railway
-
-```bash
-# Instalar Railway CLI
-npm install -g @railway/cli
-
-# Login e deploy
-railway login
-railway init
-railway up
-```
+## ⚠️ Limitações Conhecidas (Servidor)
+- As instâncias da Vercel no plano "Hobby" derrubam processos acima de **10 segundos** (Timeouts). Por esse motivo, FFmpeg de junção de Streams de altíssima definição (1080p, 4K) deve ser tratado com extremo cuidado (o aplicativo hoje esconde flags de 1080p nativamente para evitar travamentos ou as ignora e prioriza `18-360p` ou audios).
+- Qualquer modificação de engine profunda *sempre* recorra aos Ciphers confiáveis nativos e de linha de comando (`yt-dlp`), evite bibliotecas empacotadas de JavaScript (`ytdl-core`), o YouTube as barra em horas!

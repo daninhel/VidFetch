@@ -228,11 +228,9 @@
             });
 
             let badge;
-            if (stream.needs_merge && !ffmpegOk) badge = '⚠ FFmpeg';
-            else if (stream.needs_merge) badge = '🔀 A/V';
-            else if (['mp3', 'm4a'].includes(fmt)) badge = 'Áudio';
+            if (['mp3', 'm4a'].includes(fmt)) badge = 'Áudio';
             else if (stream.progressive) badge = 'V+A ✓';
-            else badge = 'Áudio';
+            else badge = 'Ext.';
 
             const labelEl = document.createElement('span');
             labelEl.className = `quality-label${!stream.available ? ' disabled' : ''}`;
