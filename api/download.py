@@ -32,6 +32,10 @@ def download():
         'format': str(itag),
         'quiet': True,
         'no_warnings': True,
+        'nocheckcertificate': True,
+        'extractor_args': {
+            'youtube': ['player_client=ios,android']
+        }
     }
 
     try:
